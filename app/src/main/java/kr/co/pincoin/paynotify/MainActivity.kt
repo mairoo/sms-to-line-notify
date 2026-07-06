@@ -7,6 +7,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -63,7 +65,15 @@ class MainActivity : Activity() {
         setupDropdown(etAuthHeader, listOf("Authorization", "X-API-Key", "X-Auth-Token", "Api-Key"))
         setupDropdown(etAuthScheme, listOf("Token", "Bearer", "Basic"))
 
+        // 헤더명이 비면(인증 없음) 스킴·토큰은 비활성화
+        etAuthHeader.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, count: Int, before: Int) {}
+            override fun afterTextChanged(s: Editable?) = updateAuthFieldsEnabled()
+        })
+
         loadConfig()
+        updateAuthFieldsEnabled()
 
         findViewById<Button>(R.id.btn_save).setOnClickListener { saveConfig() }
 
@@ -102,6 +112,17 @@ class MainActivity : Activity() {
         config.telegramBotToken = etTelegramToken.text.toString()
         config.telegramChannelId = etTelegramChannel.text.toString()
         Toast.makeText(this, "저장되었습니다", Toast.LENGTH_SHORT).show()
+    }
+
+    /** 헤더명이 비어 있으면(인증 없음) 스킴·토큰 값을 비우고 필드를 비활성화한다. */
+    private fun updateAuthFieldsEnabled() {
+        val enabled = etAuthHeader.text.toString().isNotBlank()
+        etAuthScheme.isEnabled = enabled
+        etToken.isEnabled = enabled
+        if (!enabled) {
+            etAuthScheme.setText("")
+            etToken.setText("")
+        }
     }
 
     /**

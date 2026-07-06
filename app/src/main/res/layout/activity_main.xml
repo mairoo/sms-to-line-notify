@@ -9,6 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:padding="20dp">
 
         <TextView
@@ -49,26 +51,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="헤더명 (비우면 인증 없음) — 예: Authorization, X-API-Key" />
+            android:text="헤더명 (비우면 인증 없음)" />
 
         <AutoCompleteTextView
             android:id="@+id/et_auth_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Authorization"
             android:completionThreshold="1"
             android:inputType="text" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="스킴/접두어 (비우면 값만) — 예: Token, Bearer, Basic" />
+            android:text="스킴/접두어 (비우면 값만)" />
 
         <AutoCompleteTextView
             android:id="@+id/et_auth_scheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Token"
             android:completionThreshold="1"
             android:inputType="text" />
 
