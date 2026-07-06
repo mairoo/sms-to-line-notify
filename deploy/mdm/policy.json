@@ -1,0 +1,57 @@
+{
+  "applications": [
+    {
+      "packageName": "kr.co.pincoin.paynotify",
+      "installType": "KIOSK",
+      "defaultPermissionPolicy": "GRANT",
+      "permissionGrants": [
+        { "permission": "android.permission.RECEIVE_SMS", "policy": "GRANT" },
+        { "permission": "android.permission.READ_SMS", "policy": "GRANT" }
+      ],
+      "autoUpdateMode": "AUTO_UPDATE_HIGH_PRIORITY"
+    }
+  ],
+
+  "defaultPermissionPolicy": "GRANT",
+
+  "kioskCustomization": {
+    "powerButtonActions": "POWER_BUTTON_AVAILABLE",
+    "systemErrorWarnings": "ERROR_AND_WARNINGS_MUTED",
+    "systemNavigation": "NAVIGATION_DISABLED",
+    "statusBar": "NOTIFICATIONS_AND_SYSTEM_INFO_DISABLED",
+    "deviceSettings": "SETTINGS_ACCESS_BLOCKED"
+  },
+
+  "factoryResetDisabled": true,
+  "addUserDisabled": true,
+  "removeUserDisabled": true,
+  "modifyAccountsDisabled": true,
+  "installUnknownSourcesAllowed": false,
+  "safeBootDisabled": true,
+  "mountPhysicalMediaDisabled": true,
+  "usbFileTransferDisabled": true,
+
+  "advancedSecurityOverrides": {
+    "developerSettings": "DEVELOPER_SETTINGS_DISABLED",
+    "untrustedAppsPolicy": "DISALLOW_INSTALL",
+    "googlePlayProtectVerifyApps": "VERIFY_APPS_ENFORCED"
+  },
+
+  "keyguardDisabled": true,
+  "stayOnPluggedModes": ["AC", "USB", "WIRELESS"],
+  "autoDateAndTimeZone": "AUTO_DATE_AND_TIME_ZONE_ENFORCED",
+
+  "systemUpdate": {
+    "type": "WINDOWED",
+    "startMinutes": 240,
+    "endMinutes": 360
+  },
+
+  "statusReportingSettings": {
+    "deviceSettingsEnabled": true,
+    "softwareInfoEnabled": true,
+    "memoryInfoEnabled": true,
+    "networkInfoEnabled": true,
+    "applicationReportsEnabled": true
+  }
+}
