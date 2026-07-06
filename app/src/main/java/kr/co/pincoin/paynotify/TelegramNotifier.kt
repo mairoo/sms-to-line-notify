@@ -1,5 +1,6 @@
 package kr.co.pincoin.paynotify
 
+import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,10 +15,18 @@ import java.nio.charset.StandardCharsets
 object TelegramNotifier {
     private const val TAG = "TelegramNotifier"
 
-    suspend fun send(message: String) = withContext(Dispatchers.IO) {
+    suspend fun send(context: Context, message: String) = withContext(Dispatchers.IO) {
+        val config = AppConfig(context)
+        val botToken = config.telegramBotToken.trim()
+        val channelId = config.telegramChannelId.trim()
+        if (botToken.isEmpty() || channelId.isEmpty()) {
+            Log.d(TAG, "텔레그램 미설정 — 전송 건너뜀")
+            return@withContext
+        }
+
         var con: HttpURLConnection? = null
         try {
-            val url = URL("https://api.telegram.org/bot${BuildConfig.TELEGRAM_BOT_TOKEN}/sendMessage")
+            val url = URL("https://api.telegram.org/bot$botToken/sendMessage")
             con = (url.openConnection() as HttpURLConnection).apply {
                 requestMethod = "POST"
                 setRequestProperty("Content-Type", "application/json")
@@ -26,7 +35,7 @@ object TelegramNotifier {
             }
 
             val payload = JSONObject().apply {
-                put("chat_id", BuildConfig.TELEGRAM_CHANNEL_ID)
+                put("chat_id", channelId)
                 put("text", message)
                 put("parse_mode", "HTML")
             }

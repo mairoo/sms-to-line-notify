@@ -11,20 +11,21 @@ import kotlinx.coroutines.launch
 class Receiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+        val appContext = context.applicationContext
         when (intent.action) {
-            Telephony.Sms.Intents.SMS_RECEIVED_ACTION -> handleSms(intent)
-            Intent.ACTION_BATTERY_LOW -> notifyAsync { TelegramNotifier.send("배터리 부족") }
-            Intent.ACTION_BATTERY_OKAY -> notifyAsync { TelegramNotifier.send("배터리 정상화") }
+            Telephony.Sms.Intents.SMS_RECEIVED_ACTION -> handleSms(appContext, intent)
+            Intent.ACTION_BATTERY_LOW -> notifyAsync { TelegramNotifier.send(appContext, "배터리 부족") }
+            Intent.ACTION_BATTERY_OKAY -> notifyAsync { TelegramNotifier.send(appContext, "배터리 정상화") }
             Intent.ACTION_BOOT_COMPLETED -> {
                 val mainActivity = Intent(context, MainActivity::class.java)
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(mainActivity)
-                notifyAsync { TelegramNotifier.send("부팅 완료") }
+                notifyAsync { TelegramNotifier.send(appContext, "부팅 완료") }
             }
         }
     }
 
-    private fun handleSms(intent: Intent) {
+    private fun handleSms(appContext: Context, intent: Intent) {
         val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent) ?: return
         if (messages.isEmpty()) return
 
@@ -35,9 +36,9 @@ class Receiver : BroadcastReceiver() {
         val payment = parse(phone, body)
         notifyAsync {
             if (payment != null) {
-                PaymentNotifier.send(payment)
+                PaymentNotifier.send(appContext, payment)
             } else {
-                TelegramNotifier.send(body.replace("[Web발신]", ""))
+                TelegramNotifier.send(appContext, body.replace("[Web발신]", ""))
             }
         }
     }

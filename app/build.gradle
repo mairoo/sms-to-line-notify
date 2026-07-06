@@ -13,6 +13,23 @@ android {
         versionCode 1
         versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // 앱 설정 빌드 디폴트. 판매용 빌드라 내부 시크릿(URL/토큰/텔레그램)은 비워두고,
+        // 각 단말에서 설정 화면으로 입력한다. 필드명/포맷/인증 헤더는 범용 기본값만 둔다.
+        // 운영값은 여기 넣지 말고 별도 보안 저장소(비밀번호 관리자 등)에 백업.
+        buildConfigField "String", "PAYMENT_NOTIFY_URL", '""'
+        buildConfigField "String", "PAYMENT_NOTIFY_TOKEN", '""'
+        buildConfigField "String", "PAYMENT_AUTH_HEADER", '"Authorization"'
+        buildConfigField "String", "PAYMENT_AUTH_SCHEME", '"Token"'
+        buildConfigField "String", "PAYMENT_NOTIFY_FORMAT", '"form"'
+        buildConfigField "String", "PAYMENT_FIELD_ACCOUNT", '"account"'
+        buildConfigField "String", "PAYMENT_FIELD_RECEIVED", '"received"'
+        buildConfigField "String", "PAYMENT_FIELD_NAME", '"name"'
+        buildConfigField "String", "PAYMENT_FIELD_METHOD", '"method"'
+        buildConfigField "String", "PAYMENT_FIELD_AMOUNT", '"amount"'
+        buildConfigField "String", "PAYMENT_FIELD_BALANCE", '"balance"'
+        buildConfigField "String", "TELEGRAM_BOT_TOKEN", '""'
+        buildConfigField "String", "TELEGRAM_CHANNEL_ID", '""'
     }
 
     buildFeatures {
@@ -32,31 +49,7 @@ android {
     }
 
     buildTypes {
-        debug {
-            buildConfigField "String", "PAYMENT_NOTIFY_URL", PAYMENT_NOTIFY_URL
-            buildConfigField "String", "PAYMENT_NOTIFY_TOKEN", PAYMENT_NOTIFY_TOKEN
-            buildConfigField "String", "PAYMENT_NOTIFY_FORMAT", PAYMENT_NOTIFY_FORMAT
-            buildConfigField "String", "PAYMENT_FIELD_ACCOUNT", PAYMENT_FIELD_ACCOUNT
-            buildConfigField "String", "PAYMENT_FIELD_RECEIVED", PAYMENT_FIELD_RECEIVED
-            buildConfigField "String", "PAYMENT_FIELD_NAME", PAYMENT_FIELD_NAME
-            buildConfigField "String", "PAYMENT_FIELD_METHOD", PAYMENT_FIELD_METHOD
-            buildConfigField "String", "PAYMENT_FIELD_AMOUNT", PAYMENT_FIELD_AMOUNT
-            buildConfigField "String", "PAYMENT_FIELD_BALANCE", PAYMENT_FIELD_BALANCE
-            buildConfigField "String", "TELEGRAM_BOT_TOKEN", TELEGRAM_BOT_TOKEN
-            buildConfigField "String", "TELEGRAM_CHANNEL_ID", TELEGRAM_CHANNEL_ID
-        }
         release {
-            buildConfigField "String", "PAYMENT_NOTIFY_URL", PAYMENT_NOTIFY_URL
-            buildConfigField "String", "PAYMENT_NOTIFY_TOKEN", PAYMENT_NOTIFY_TOKEN
-            buildConfigField "String", "PAYMENT_NOTIFY_FORMAT", PAYMENT_NOTIFY_FORMAT
-            buildConfigField "String", "PAYMENT_FIELD_ACCOUNT", PAYMENT_FIELD_ACCOUNT
-            buildConfigField "String", "PAYMENT_FIELD_RECEIVED", PAYMENT_FIELD_RECEIVED
-            buildConfigField "String", "PAYMENT_FIELD_NAME", PAYMENT_FIELD_NAME
-            buildConfigField "String", "PAYMENT_FIELD_METHOD", PAYMENT_FIELD_METHOD
-            buildConfigField "String", "PAYMENT_FIELD_AMOUNT", PAYMENT_FIELD_AMOUNT
-            buildConfigField "String", "PAYMENT_FIELD_BALANCE", PAYMENT_FIELD_BALANCE
-            buildConfigField "String", "TELEGRAM_BOT_TOKEN", TELEGRAM_BOT_TOKEN
-            buildConfigField "String", "TELEGRAM_CHANNEL_ID", TELEGRAM_CHANNEL_ID
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

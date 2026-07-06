@@ -1,5 +1,6 @@
 package kr.co.pincoin.paynotify
 
+import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -29,25 +30,34 @@ data class Payment(
 object PaymentNotifier {
     private const val TAG = "PaymentNotifier"
 
-    suspend fun send(payment: Payment) = withContext(Dispatchers.IO) {
+    suspend fun send(context: Context, payment: Payment) = withContext(Dispatchers.IO) {
+        val config = AppConfig(context)
+
         // 설정된 필드명 -> 값. 전송 순서를 위해 삽입 순서를 유지한다.
         val fields = linkedMapOf(
-            BuildConfig.PAYMENT_FIELD_ACCOUNT to payment.bankCode,
-            BuildConfig.PAYMENT_FIELD_RECEIVED to payment.received,
-            BuildConfig.PAYMENT_FIELD_NAME to payment.name,
-            BuildConfig.PAYMENT_FIELD_METHOD to payment.method,
-            BuildConfig.PAYMENT_FIELD_AMOUNT to payment.amount,
-            BuildConfig.PAYMENT_FIELD_BALANCE to payment.balance,
+            config.fieldAccount to payment.bankCode,
+            config.fieldReceived to payment.received,
+            config.fieldName to payment.name,
+            config.fieldMethod to payment.method,
+            config.fieldAmount to payment.amount,
+            config.fieldBalance to payment.balance,
         )
 
-        val format = BuildConfig.PAYMENT_NOTIFY_FORMAT.trim().lowercase()
+        val format = config.format.trim().lowercase()
 
         var con: HttpURLConnection? = null
         try {
-            con = (URL(BuildConfig.PAYMENT_NOTIFY_URL).openConnection() as HttpURLConnection).apply {
+            con = (URL(config.url).openConnection() as HttpURLConnection).apply {
                 requestMethod = "POST"
                 setRequestProperty("Cache-Control", "no-cache")
-                setRequestProperty("Authorization", "Token ${BuildConfig.PAYMENT_NOTIFY_TOKEN}")
+                // 인증 헤더는 설정에 따라 선언적으로 구성. 헤더명/토큰이 비면 생략.
+                val headerName = config.authHeader.trim()
+                val token = config.token.trim()
+                if (headerName.isNotEmpty() && token.isNotEmpty()) {
+                    val scheme = config.authScheme.trim()
+                    val value = if (scheme.isEmpty()) token else "$scheme $token"
+                    setRequestProperty(headerName, value)
+                }
                 doOutput = true
             }
 

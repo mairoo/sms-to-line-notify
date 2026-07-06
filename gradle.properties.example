@@ -1,0 +1,18 @@
+# gradle.properties 템플릿 — 이 파일을 복사해서 gradle.properties 로 만들어 채운다.
+#   cp gradle.properties.example gradle.properties
+# 실제 gradle.properties 는 .gitignore 대상이라 커밋되지 않는다.
+#
+# 참고: 앱의 전송 설정(URL/토큰/인증/포맷/필드명/텔레그램)은 더 이상 빌드에 넣지 않는다.
+#       각 단말에서 앱 설정 화면(SharedPreferences)으로 입력한다. 빌드 디폴트는 비어 있음.
+
+# AndroidX
+android.useAndroidX=true
+org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+
+# Release 서명 — keytool 로 생성한 키스토어 정보를 채운다.
+#   keytool -genkeypair -v -keystore app/release.jks -alias <alias> \
+#           -keyalg RSA -keysize 2048 -validity 10000
+RELEASE_STORE_FILE=release.jks
+RELEASE_STORE_PASSWORD=changeme
+RELEASE_KEY_ALIAS=paynotify
+RELEASE_KEY_PASSWORD=changeme
