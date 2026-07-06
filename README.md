@@ -37,6 +37,8 @@
 앱 실행 → 설정 화면에서 입력 후 **저장**. 값은 앱 전용 로컬 저장소(SharedPreferences)에 보관되며
 재빌드가 필요 없다. 수신 서버 구현(Django/Spring/FastAPI 등)에 맞춰 조정한다.
 
+<p><img src="docs/settings.png" width="320" alt="설정 화면"></p>
+
 - **전송 URL**
 - **인증**: 헤더명(예: `Authorization`, `X-API-Key`) + 스킴/접두어(`Token`/`Bearer`/`Basic` 또는 없음) + 토큰
   - 전송 헤더 = `헤더명: 스킴 토큰` (스킴 비면 값만, 헤더명 비면 인증 없음)
@@ -45,6 +47,67 @@
 - **텔레그램**: 봇 토큰 · 채널 ID (비우면 미사용)
 
 > 빌드 디폴트는 **비어 있다**. 내부 운영값은 앱에 박지 않고 각 단말에서 입력한다.
+
+## 통보 요청 예시 (curl)
+
+파싱 결과가 아래처럼 통보 URL로 POST된다. **필드명·인증·포맷은 모두 설정값**이며,
+예시는 기본 필드명과 아래 파싱 데이터 기준이다.
+
+```
+account=0  received=07/06 14:23  name=홍길동  method=입금  amount=10,000  balance=1,000,000
+```
+
+### 인증 헤더 (설정에 따라)
+
+전송 헤더 = `헤더명: 스킴 토큰` (헤더명 비면 인증 없음, 스킴 비면 값만).
+
+| 방식 | 헤더 | 헤더명 / 스킴 |
+|---|---|---|
+| DRF TokenAuth (기본) | `Authorization: Token abcdef123456` | `Authorization` / `Token` |
+| JWT · OAuth2 (Bearer) | `Authorization: Bearer eyJhbGciOi...` | `Authorization` / `Bearer` |
+| Basic | `Authorization: Basic dXNlcjpwYXNz` | `Authorization` / `Basic` |
+| API Key 헤더 | `X-API-Key: abcdef123456` | `X-API-Key` / (없음) |
+| 인증 없음 | (헤더 없음) | (헤더명 비움) |
+
+### form (x-www-form-urlencoded)
+
+```bash
+curl -X POST 'https://example.com/callback/' \
+  -H 'Authorization: Token abcdef123456' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  --data-urlencode 'account=0' \
+  --data-urlencode 'received=07/06 14:23' \
+  --data-urlencode 'name=홍길동' \
+  --data-urlencode 'method=입금' \
+  --data-urlencode 'amount=10,000' \
+  --data-urlencode 'balance=1,000,000'
+```
+
+### json (application/json)
+
+```bash
+curl -X POST 'https://example.com/callback/' \
+  -H 'Authorization: Token abcdef123456' \
+  -H 'Content-Type: application/json; charset=UTF-8' \
+  -d '{"account":"0","received":"07/06 14:23","name":"홍길동","method":"입금","amount":"10,000","balance":"1,000,000"}'
+```
+
+### multipart (form-data)
+
+```bash
+# curl -F 는 multipart/form-data 로 자동 전송 (boundary 자동 생성)
+curl -X POST 'https://example.com/callback/' \
+  -H 'Authorization: Token abcdef123456' \
+  -F 'account=0' \
+  -F 'received=07/06 14:23' \
+  -F 'name=홍길동' \
+  -F 'method=입금' \
+  -F 'amount=10,000' \
+  -F 'balance=1,000,000'
+```
+
+> 필드명을 바꾸면(예: `name` → `sender`) 키가 그대로 바뀐다. 헤더명/스킴을 `Bearer` 등으로
+> 바꾸면 `Authorization: Bearer <토큰>` 으로 나간다.
 
 ## 빌드
 
