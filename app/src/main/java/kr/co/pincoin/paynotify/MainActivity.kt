@@ -39,6 +39,9 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // 버전은 타이틀바 서브타이틀에 표시 (body 는 폼만)
+        actionBar?.subtitle = getString(R.string.app_version)
+
         config = AppConfig(this)
 
         etUrl = findViewById(R.id.et_url)
