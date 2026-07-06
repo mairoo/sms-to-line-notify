@@ -72,7 +72,8 @@ Content-Type: application/json
 
 ## 남은 캐비앳
 
-- **배터리 최적화 예외**: AMAPI 에 직접 화이트리스트 필드는 없다. 다만 dedicated(키오스크) 단말은
-  force-install 앱을 잘 안 죽이므로 큰 문제는 아니다. MDM 빌드에서는 `MainActivity` 의
-  배터리 최적화 요청 팝업을 제거해도 된다(설정 접근이 어차피 차단됨).
+- **배터리 최적화 예외 (유지 필수)**: 단말이 항상 충전 상태가 아니므로 Doze/앱 대기에서
+  백그라운드 SMS 리시버가 죽을 수 있다. 따라서 `MainActivity` 의 배터리 최적화 예외 요청
+  (`REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`)은 **제거하지 말고 유지**한다. AMAPI 에 직접
+  화이트리스트 필드는 없으므로 이 앱 내 예외 요청 흐름이 포워딩 신뢰성의 핵심이다.
 - **FRP(공장초기화 보호)**: 강한 도난 방지가 필요하면 zero-touch 등록으로 기기를 조직에 묶는다.
